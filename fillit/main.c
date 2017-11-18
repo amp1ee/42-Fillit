@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft/libft.h"
 #include "fillit.h"
 #include <unistd.h>
 #include <fcntl.h> 
@@ -46,6 +46,64 @@ bool is_valid(char *tetrimino)
 	return (true);
 }
 
+t_tetrimino *which_tetrimino(char **arr, int y, int x)
+{
+	int k;
+	int p;
+
+	//printf("x = %d y = %d\n", x, y);
+
+	k = 0;
+	while (k < 19)
+	{
+		p = 0;
+		while (p < 3)
+		{
+			if (!((y + tetriminos[k][p].y) >= 0 && (y + tetriminos[k][p].y) <= 3
+				&& (x + tetriminos[k][p].x) >= 0 && (x + tetriminos[k][p].x) <= 3
+				&& arr[y + tetriminos[k][p].y][x + tetriminos[k][p].x] == '#'))
+			{
+				break;
+			}
+			p++;
+		}
+		if (p == 3)
+		{
+			printf("figure %d\n\n", k);
+			return (NULL);
+		}
+		k++;
+	}
+	return (NULL);
+}
+
+t_tetrimino *is_tetrimino(char *tetrimino)
+{
+	int x;
+	int y;
+	char **arr;
+
+	arr = ft_strsplit(tetrimino, '\n');
+	printf("%s\n", arr[0]);
+	printf("%s\n", arr[1]);
+	printf("%s\n", arr[2]);
+	printf("%s\n", arr[3]);
+
+	y = 0;
+	while (arr[y])
+	{
+		x = 0;
+		while (x < 4)
+		{
+			if (arr[y][x] == '#')
+				return (which_tetrimino(arr, y, x));
+			x++;
+		}
+		y++;
+	}
+	return (NULL);
+}
+
 t_tetrimino **read_data(char *filename)
 {
 	int fd;
@@ -68,13 +126,17 @@ t_tetrimino **read_data(char *filename)
 				exit(0);
 			}
 			else
-				printf("true\n");
+			{
+				is_tetrimino(buffer);
+			}
 		}
 		return (NULL);
 	}
 	else
 		exit(0);
 }
+
+
 
 int main(int argc, char **argv)
 {
