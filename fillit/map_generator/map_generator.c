@@ -38,7 +38,7 @@ static char	**generate_map(unsigned int size)
 		y = (blocks[random[size]]).h;
 		x = (blocks[random[size]]).w;
 		x_off = (4 - x) ? rand_om((4 - x), size + 1)[size] : 0;
-		y_off = (4 - x) ? rand_om((4 - y), size + 1)[size] : 0;
+		y_off = (4 - y) ? rand_om((4 - y), size + 1)[size] : 0;
 		t_x_off = x_off;
 		t_y_off = y_off;
 		t_y = y;
