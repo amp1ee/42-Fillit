@@ -46,12 +46,11 @@ bool is_valid(char *tetrimino)
 	return (true);
 }
 
-t_tetrimino *which_tetrimino(char **arr, int y, int x)
+t_tetrimino *which_tetrimino(char **arr, int y, int x, int i)
 {
 	int k;
 	int p;
-
-	//printf("x = %d y = %d\n", x, y);
+	t_tetrimino		*tetr;
 
 	k = 0;
 	while (k < 19)
@@ -69,15 +68,19 @@ t_tetrimino *which_tetrimino(char **arr, int y, int x)
 		}
 		if (p == 3)
 		{
-			printf("figure %d\n\n", k);
-			return (NULL);
+			printf("figure %d\n", k);
+			tetr = (t_tetrimino *)malloc(sizeof(t_tetrimino));
+			tetr->letter = 'A' + i;
+			printf("letter %c\n\n", tetr->letter);
+			tetr->blocks = tetriminos[k];
+			return (tetr);
 		}
 		k++;
 	}
 	return (NULL);
 }
 
-t_tetrimino *is_tetrimino(char *tetrimino)
+t_tetrimino *is_tetrimino(char *tetrimino, int i)
 {
 	int x;
 	int y;
@@ -96,7 +99,7 @@ t_tetrimino *is_tetrimino(char *tetrimino)
 		while (x < 4)
 		{
 			if (arr[y][x] == '#')
-				return (which_tetrimino(arr, y, x));
+				return (which_tetrimino(arr, y, x, i));
 			x++;
 		}
 		y++;
@@ -104,7 +107,7 @@ t_tetrimino *is_tetrimino(char *tetrimino)
 	return (NULL);
 }
 
-t_tetrimino **read_data(char *filename)
+t_tetrimino **read_data(char *filename, int *i, t_tetrimino **tetrs)
 {
 	int fd;
 	char *buffer;
@@ -127,22 +130,29 @@ t_tetrimino **read_data(char *filename)
 			}
 			else
 			{
-				is_tetrimino(buffer);
+				if (tetrs)
+					tetrs[*i] = is_tetrimino(buffer, (*i));
+				(*i)++;
 			}
 		}
-		return (NULL);
+		return (tetrs);
 	}
 	else
 		exit(0);
 }
 
-
-
 int main(int argc, char **argv)
 {
+	int			i;
+	t_tetrimino **tetrs;
+
+	i = 0;
 	if (argc == 2)
 	{
-		read_data(argv[1]);
+		read_data(argv[1], &i, NULL);
+		tetrs = (t_tetrimino **)malloc(sizeof(t_tetrimino) * i);
+		i = 0;
+		tetrs = read_data(argv[1], &i, tetrs);
 	}
 	else
 		ft_putendl("Usage:");
